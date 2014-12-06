@@ -1,0 +1,68 @@
+body {
+    padding-top: 70px;
+}
+
+.table-nonfluid {
+   width: auto;
+}
+
+.checkbox-inline.no-indent,
+.checkbox-inline.no-indent+.checkbox-inline.no-indent {
+  margin-left: 0;
+  margin-right: 20px;
+}
+.checkbox-inline.no_indent:last-child {
+  margin-right: 0;
+}
+
+.sec-purpose {
+    background-color: #113F8C;
+}
+.sec-keywords {
+    background-color: #D70060;
+}
+.sec-author-date {
+    background-color: #32742C;
+}
+.sec-parallels {
+    background-color: #01A4A4;
+}
+.sec-outline {
+    background-color: #F18D05;
+}
+.sec-key-passages {
+    background-color: #00A1CB;
+}
+.sec-key-dates {
+    background-color: #61AE24;
+}
+.sec-key-people {
+    background-color: #E54028;
+}
+tr.book-heading {
+    border-top: solid 3px #9B9B9B;
+}
+
+.checkbox-inline input[type="checkbox"] {
+    position: absolute;
+    margin-left: -20px;
+}
+.checkbox-inline+.checkbox-inline {
+    margin-top: 0;
+    margin-left: 30px;
+}
+.checkbox-selector {
+    margin-right: 5px;
+}
+
+div.selections-bar {
+    margin-top: 7px;
+}
+
+td.star {
+    color: #DEDEDE;
+    cursor: pointer;
+}
+td.starred {
+    color: #FFC333;
+}

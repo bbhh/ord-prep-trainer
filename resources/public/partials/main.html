@@ -1,0 +1,51 @@
+<div class="row">
+  <div class="col-md-12">
+    <h2>Filters</h2>
+
+    <table class="table">
+      <tbody>
+        <tr>
+          <td><strong>Section(s):</strong></td>
+          <td>
+            <label class="checkbox-inline no-indent" ng-repeat="section in sections">
+              <input type="checkbox" name="selectedSections[]" value="{{section['_id']}}" ng-checked="selectedSections.indexOf(section['_id']) > -1" ng-click="toggleSectionSelection(section['_id'])"> {{section["name"]}}
+            </label>
+            <div class="selections-bar">
+              <button type="button" class="btn btn-primary btn-xs checkbox-selector" ng-click="selectAllSections()">All</button>
+              <button type="button" class="btn btn-primary btn-xs checkbox-selector" style="margin-right: 20px;" ng-click="selectNoSections()">None</button>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td><strong>Book(s):</strong></td>
+          <td>
+            <label class="checkbox-inline no-indent" ng-repeat="book in books">
+              <input type="checkbox" name="selectedBooks[]" value="{{book['name']}}" ng-checked="selectedBooks.indexOf(book['name']) > -1" ng-click="toggleBookSelection(book['name'])"> {{book["name"]}}
+            </label>
+            <div class="selections-bar">
+              <button type="button" class="btn btn-primary btn-xs checkbox-selector" ng-click="selectAllBooks()">All</button>
+              <button type="button" class="btn btn-primary btn-xs checkbox-selector" ng-click="selectOTBooks()">OT</button>
+              <button type="button" class="btn btn-primary btn-xs checkbox-selector" ng-click="selectNTBooks()">NT</button>
+              <button type="button" class="btn btn-primary btn-xs checkbox-selector" style="margin-right: 20px;" ng-click="selectNoBooks()">None</button>
+            </div>
+          </td>
+        </tr>
+    </table>
+
+    <h2>Results</h2>
+
+    <div class="alert alert-warning" role="alert" ng-show="results.length <= 0">
+      <strong>No results found.</strong> Please try other selections above.
+    </div>
+
+    <table id="results-table" class="table table-condensed table-nonfluid" ng-show="results.length > 0">
+      <tbody>
+        <tr ng-repeat="result in results" ng-class="{'book-heading': result['book-name'] != results[$index-1]['book-name']}">
+          <td><span class="label sec-{{result['section-name'].replace('/', '-')}}">{{result["section-name"]}}</span></td>
+          <td><strong>{{result["book-name"]}}</strong></td>
+          <td class="star" ng-class="{starred: stars.indexOf(result['book-name'] + ':' + result['section-name']) != -1}" ng-click="starItem(result['book-name'], result['section-name'])"><i class="fa fa-star"></i></td>
+          <td ng-bind-html="result['content']"></td>
+        </tr>
+      </tbody>
+  </div>
+</div>
