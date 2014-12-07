@@ -38,14 +38,24 @@
       <strong>No results found.</strong> Please try other selections above.
     </div>
 
+    <div id="results-filter" ng-show="results.length > 0">
+      <div class="btn-group">
+        <label class="btn btn-success btn-sm" ng-model="data.showStarredOnly" btn-radio="false">All</label>
+        <label class="btn btn-success btn-sm" ng-model="data.showStarredOnly" btn-radio="true">Starred</label>
+      </div>
+
+      <button type="button" class="btn btn-info btn-sm" ng-model="data.hideAnswers" btn-checkbox btn-checkbox-true="true" btn-checkbox-false="false">Hide Answers</button>
+    </div>
+
     <table id="results-table" class="table table-condensed table-nonfluid" ng-show="results.length > 0">
       <tbody>
-        <tr ng-repeat="result in results" ng-class="{'book-heading': result['book-name'] != results[$index-1]['book-name']}">
+        <tr ng-repeat="result in results | filter:resultsFilter" ng-class="{'book-heading': result['book-name'] != results[$index-1]['book-name']}">
           <td><span class="label sec-{{result['section-name'].replace('/', '-')}}">{{result["section-name"]}}</span></td>
           <td><strong>{{result["book-name"]}}</strong></td>
-          <td class="star" ng-class="{starred: stars.indexOf(result['book-name'] + ':' + result['section-name']) != -1}" ng-click="starItem(result['book-name'], result['section-name'])"><i class="fa fa-star"></i></td>
-          <td ng-bind-html="result['content']"></td>
+          <td class="star" ng-class="{starred: stars.indexOf(result['id']) != -1}" ng-click="starItem(result['book-name'], result['section-name'])"><i class="fa fa-star"></i></td>
+          <td ng-bind-html="result['content']" ng-class="{'hidden-text': data.hideAnswers}"></td>
         </tr>
       </tbody>
+    </table>
   </div>
 </div>

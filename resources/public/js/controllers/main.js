@@ -27,11 +27,17 @@ function MainCtrl($scope, $http, $routeParams) {
 
     $scope.stars = [];
 
+    $scope.data = {
+        showStarredOnly: false,
+        hideAnswers: false
+    }
+
     var init = function() {
         $scope.getBooks();
         $scope.getStars();
     };
 
+    ///// section selection
     $scope.selectAllSections = function() {
         $scope.selectedSections.length = 0;
         angular.forEach($scope.sections, function(value, key) {
@@ -56,6 +62,7 @@ function MainCtrl($scope, $http, $routeParams) {
         }
     };
 
+    ///// book selection
     $scope.selectAllBooks = function() {
         $scope.selectedBooks.length = 0;
         angular.forEach($scope.books, function(value, key) {
@@ -102,6 +109,40 @@ function MainCtrl($scope, $http, $routeParams) {
         }
     };
 
+    // whenever section/book selections change...
+    $scope.$watch(function() { 
+        return angular.toJson([$scope.selectedSections, $scope.selectedBooks]); 
+    }, function(newValue, oldValue) {
+        if (newValue == null) return;
+
+        $http({url: API_URL + '/results',
+               method: 'GET',
+               params: {sections: $scope.selectedSections.join(':'),
+                        books: $scope.selectedBooks.join(':')}}).success(function(data, status) {
+                            $scope.results.length = 0;
+                            $.each(data, function(index, value) {
+                                value['id'] = value['book-name'] + ':' + value['section-name'];
+                                $scope.results.push(value);
+                            });
+                        });
+    }, true);
+
+    ///// results filtering by star
+    $scope.showAllFilter = function(result) {
+        return true;
+    }
+    $scope.starredOnlyFilter = function(result) {
+        return $scope.stars.indexOf(result['id']) != -1;
+    };
+
+    $scope.resultsFilter = $scope.showAllFilter;
+
+    // whenever filter changes...
+    $scope.$watch('data.showStarredOnly', function(newValue, oldValue) {
+        $scope.resultsFilter = (newValue == true) ? $scope.starredOnlyFilter : $scope.showAllFilter;
+    });
+
+    ///// remote calls
     $scope.getBooks = function() {
         // retrieve book names
         $http({url: API_URL + '/book-names',
@@ -140,24 +181,10 @@ function MainCtrl($scope, $http, $routeParams) {
         $http({url: API_URL + '/stars',
                method: 'PUT',
                params: {user: $scope.userId,
-                        stars: $scope.stars.join(",")}}).success(function(data, status) {
+                        stars: $scope.stars.join(',')}}).success(function(data, status) {
                             // ...
                });
     };
-
-    // whenever selections change...
-    $scope.$watch(function() { 
-        return angular.toJson([$scope.selectedSections, $scope.selectedBooks]); 
-    }, function(newValue, oldValue) {
-        if (newValue == null) return;
-
-        $http({url: API_URL + '/results',
-               method: 'GET',
-               params: {sections: $scope.selectedSections.join(':'),
-                        books: $scope.selectedBooks.join(':')}}).success(function(data, status) {
-                            $scope.results = data;
-                        });
-    }, true);
 
     init();
 }

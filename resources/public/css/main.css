@@ -15,6 +15,10 @@ body {
   margin-right: 0;
 }
 
+#results-filter {
+    margin-bottom: 10px;
+}
+
 .sec-purpose {
     background-color: #113F8C;
 }
@@ -65,4 +69,11 @@ td.star {
 }
 td.starred {
     color: #FFC333;
+}
+
+td.hidden-text {
+    color: #FFFFFF;
+}
+td.hidden-text:hover {
+    color: #000000;
 }
