@@ -121,7 +121,7 @@ function MainCtrl($scope, $http, $routeParams) {
                         books: $scope.selectedBooks.join(':')}}).success(function(data, status) {
                             $scope.results.length = 0;
                             $.each(data, function(index, value) {
-                                value['id'] = value['book-name'] + ':' + value['section-name'];
+                                value['id'] = value['book-name'] + ':' + value['section-name'] + ':' + value['part'];
                                 $scope.results.push(value);
                             });
                         });
@@ -166,8 +166,8 @@ function MainCtrl($scope, $http, $routeParams) {
                });
     };
 
-    $scope.starItem = function(bookName, sectionName) {
-        var item = bookName + ':' + sectionName;
+    $scope.starItem = function(bookName, sectionName, part) {
+        var item = bookName + ':' + sectionName + ':' + part;
 
         // toggle in stars
         var idx = $.inArray(item, $scope.stars);

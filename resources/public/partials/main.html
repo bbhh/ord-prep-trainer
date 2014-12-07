@@ -52,7 +52,7 @@
         <tr ng-repeat="result in results | filter:resultsFilter" ng-class="{'book-heading': result['book-name'] != results[$index-1]['book-name']}">
           <td><span class="label sec-{{result['section-name'].replace('/', '-')}}">{{result["section-name"]}}</span></td>
           <td><strong>{{result["book-name"]}}</strong></td>
-          <td class="star" ng-class="{starred: stars.indexOf(result['id']) != -1}" ng-click="starItem(result['book-name'], result['section-name'])"><i class="fa fa-star"></i></td>
+          <td class="star" ng-class="{starred: stars.indexOf(result['id']) != -1}" ng-click="starItem(result['book-name'], result['section-name'], result['part'])"><i class="fa fa-star"></i></td>
           <td ng-bind-html="result['content']" ng-class="{'hidden-text': data.hideAnswers}"></td>
         </tr>
       </tbody>

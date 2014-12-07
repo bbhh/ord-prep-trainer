@@ -18,17 +18,10 @@
 
 ;;;;; DATA
 
-(defn read-data-json-file []
-  (let [data-raw (slurp "data/combined.json")
-        data-json (json/read-str data-raw :key-fn keyword)
-        books (:books data-json)
-        flattened-books (map (fn [book]
-                               (let [book-name (:book-name book)
-                                     sections (:sections book)
-                                     new-sections (map #(assoc % :book-name book-name) sections)]
-                                 new-sections)) books)
-        merged-books (apply concat flattened-books)]
-    merged-books))
+(defn vectorize [item]
+  (if (vector? item)
+    item
+    (vector item)))
 
 (defn insert-data-into-db [json-file]
   (let [data-raw (slurp json-file)
@@ -45,22 +38,28 @@
     ;; insert new documents
     (doseq [book books]
       (let [book-name (get book "book-name")
-            sections (get book "sections")
-            new-sections (-> (map #(assoc % :book-name book-name) sections)
-                             (assoc :_id (ObjectId.)))]
-        (dorun (map #(mc/insert db coll %) new-sections))))))
+            sections (->> (get book "sections")
+                          (map (fn [section]
+                                 (map-indexed (fn [idx itm]
+                                                (hash-map
+                                                  :_id (ObjectId.)
+                                                  :book-name book-name
+                                                  :section-name (get section "section-name")
+                                                  :part (inc idx)
+                                                  :content itm))
+                                   (vectorize (get section "content")))))
+                          (apply concat))]
+        (dorun (map #(mc/insert db coll %) sections))))))
 
 (defn query-data-db [query]
   (let [coll "data"
         results (->> (mc/find-maps db coll query)
-                     (map #(dissoc % :_id))                                                                       ; remove MongoDB-specific :id
-                     (map (fn [item]                                                                              ; replace newlines with <br/>
-                            (let [content (:content item)]
-                              (if (vector? content)
-                                (assoc item :content (str/join "<br/>" content))
-                                (assoc item :content (str/replace content #"\n" "<br/>"))))))
-                     (sort-by #((into {} (map-indexed (fn [i e] [e i]) util/books-in-order)) (:book-name %))))]   ; sort by canonical order
-    ;; (println query)
+                     ;; remove MongoDB-specific :id
+                     (map #(dissoc % :_id))
+                     ;; replace newlines with <br/>
+                     (map #(assoc % :content (str/replace (:content %) #"\n" "<br/>")))
+                     ;; sort by canonical order
+                     (sort-by #((into {} (map-indexed (fn [i e] [e i]) util/books-in-order)) (:book-name %))))]
     results))
 
 (defn query-data-db-with-or-conditions [query]
