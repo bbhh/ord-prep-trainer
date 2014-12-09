@@ -27,9 +27,10 @@ function MainCtrl($scope, $http, $routeParams) {
 
     $scope.stars = [];
 
+    $scope.hideAnswers = false;
+
     $scope.data = {
-        showStarredOnly: false,
-        hideAnswers: false
+        showStarredOnly: false
     }
 
     var init = function() {
@@ -184,6 +185,18 @@ function MainCtrl($scope, $http, $routeParams) {
                         stars: $scope.stars.join(',')}}).success(function(data, status) {
                             // ...
                });
+    };
+
+    var patPair = /^(.+) [–-] (.+)$/;
+    $scope.processContent = function(section, content) {
+        if (section.indexOf('key-') != 0) return content;
+
+        var match = patPair.exec(content);
+        if (match != null) {
+            return '<span class="unhidden-text">' + match[1] + '</span> - ' + match[2];
+        } else {
+            return content;
+        }
     };
 
     init();

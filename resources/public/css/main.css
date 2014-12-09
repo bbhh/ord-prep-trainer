@@ -71,7 +71,11 @@ td.starred {
     color: #FFC333;
 }
 
-td.hidden-text {
+.unhidden-text {
+    color: #975429;
+}
+
+.hidden-text {
     color: #FFFFFF;
 }
 td.hidden-text:hover {
