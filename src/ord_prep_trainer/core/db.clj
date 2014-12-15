@@ -2,6 +2,7 @@
   (:require [clojure.data.json :as json]
             [clojure.string :as str]
             [clojure.pprint :as pp]
+            [clojure.java.io :as io]
             [monger.core :as mg]
             [monger.collection :as mc]
             [monger.query :as mq]
@@ -67,6 +68,17 @@
 
 (defn query-data-db-by-sections-and-books [sections-query books-query]
   (query-data-db {$and [{$or sections-query} {$or books-query}]}))
+
+(def prompt-item #"^(.+) [–-] (.+)$")
+(defn print-all-results [out-file]
+  (with-open [wrtr (io/writer out-file)]
+    (doseq [{:keys [book-name section-name content]} (query-data-db {})]
+      (let [groups (re-find prompt-item content)
+            is-multi (and (.startsWith section-name "key-") (some? groups))
+            new-book-name (if is-multi (str book-name " / " (nth groups 1)) book-name)
+            new-content (-> (if is-multi (nth groups 2) content)
+                            (str/replace #"<br/>" "<br>"))]
+        (.write wrtr (str "[" section-name "] " new-book-name "\t" new-content "\n"))))))
 
 ;;;;; STARS
 
