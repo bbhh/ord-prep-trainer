@@ -81,3 +81,9 @@ td.starred {
 td.hidden-text:hover {
     color: #000000;
 }
+
+.mouse-hint {
+    margin-left: 10px;
+    font-size: 90%;
+    color: #AAAAAA;
+}

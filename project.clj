@@ -10,7 +10,8 @@
                  [com.novemberain/monger "2.0.0"]]
   :plugins [[lein-ring "0.8.13"]
             [cider/cider-nrepl "0.8.1"]]
-  :ring {:handler ord-prep-trainer.core.boot/site-and-api}
+  :ring {:handler ord-prep-trainer.core.boot/site-and-api
+         :port 80}
   :profiles
   {:dev {:dependencies [[javax.servlet/servlet-api "2.5"]
                         [ring-mock "0.1.5"]]}})
